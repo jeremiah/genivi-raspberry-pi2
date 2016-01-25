@@ -2,8 +2,7 @@
 
 This repository is currently just a convenience for work being done bringing GENIVI's Demo Platform to the Raspberry Pi 2. The documentation on how to build the GDP for the RPi2 is <a href=http://wiki.projects.genivi.org/index.php/Hardware_Setup_and_Software_Installation/Rpi2> available on GENIVI's wiki</a>.
 
-
-Copyright (c) Jeremiah C. Foster 
+Copyright (c) 2015 Jeremiah C. Foster 
 
 This repository is licensed under the MIT license, the software and meta-data contained within will have their own copyrights and licenses, please review before contributing. 
 
