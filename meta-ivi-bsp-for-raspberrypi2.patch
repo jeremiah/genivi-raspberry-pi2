@@ -1,0 +1,61 @@
+ .../recipes-graphics/weston/weston_%.bbappend      | 37 ++++++++++++++++++++++
+ .../recipes-graphics/wayland/weston_1.6.0.bbappend |  2 +-
+ 2 files changed, 38 insertions(+), 1 deletion(-)
+ create mode 100644 meta-ivi-bsp/recipes-graphics/weston/weston_%.bbappend
+
+diff --git a/meta-ivi-bsp/recipes-graphics/weston/weston_%.bbappend b/meta-ivi-bsp/recipes-graphics/weston/weston_%.bbappend
+new file mode 100644
+index 0000000..b537bc6
+--- /dev/null
++++ b/meta-ivi-bsp/recipes-graphics/weston/weston_%.bbappend
+@@ -0,0 +1,37 @@
++FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
++
++### [an - 10/01/15] This is the only backend that seems to work for now.
++EXTRA_OECONF_append_raspberrypi2 += "\
++    --enable-simple-egl-clients  \
++    WESTON_NATIVE_BACKEND=fbdev-backend.so \
++    "
++    
++### [an - 10/01/15] Taken from meta-tizen-common-base/recipe-graphics/weston/weston.inc and weston-extraconf.inc
++
++EXTRA_OECONF_append_raspberrypi2 += "   \
++                    --enable-wayland-compositor \
++                    --disable-vaapi-recorder \
++                    --enable-weston-launch \
++                    --enable-drm-compositor \
++                    --enable-egl \
++                    --enable-fbdev-compositor \
++                    --disable-headless-compositor \
++                    --enable-setuid-install \
++                    --enable-demo-clients-install \
++                    --disable-lcms \
++                    --disable-webp \
++                    "
++
++EXTRA_OECONF_append_raspberrypi2 += " --disable-static --disable-setuid-install --enable-simple-clients --enable-clients --disable-libunwind --disable-xwayland --disable-xwayland-test --disable-x11-compositor --disable-rpi-compositor"
++# The current experimental vc4 drivers for RPI2 don't like the glesv2 backend
++#	so, only enable it for archs where this is known to work
++
++EXTRA_OECONF_append_raspberrypi2 += "${@bb.utils.contains('PACKAGECONFIG', 'cairo-glesv2', ' --with-cairo=glesv2', '', d)}"
++DEPENDS_append_raspberrypi2 += "${@bb.utils.contains('PACKAGECONFIG', 'cairo-glesv2', 'virtual/libgles2', '', d)}"
++
++EXTRA_OECONF_append_raspberrypi2 += "   --disable-rdp-compositor "
++EXTRA_OECONF_append_raspberrypi2 += "   --disable-dbus"
++
++CFLAGS_append_raspberrypi2 +=" -I${STAGING_DIR_TARGET}/usr/include/interface/vcos/pthreads \
++             -I${STAGING_DIR_TARGET}/usr/include/interface/vmcs_host/linux \
++             "
+diff --git a/meta-ivi/recipes-graphics/wayland/weston_1.6.0.bbappend b/meta-ivi/recipes-graphics/wayland/weston_1.6.0.bbappend
+index 1f78696..12873d2 100644
+--- a/meta-ivi/recipes-graphics/wayland/weston_1.6.0.bbappend
++++ b/meta-ivi/recipes-graphics/wayland/weston_1.6.0.bbappend
+@@ -51,7 +51,7 @@ SRC_URI_append = " file://ivi-shell-click-event.patch"
+ # [PATCH] Enable/disable default virtual keyboard
+ # Signed-off-by: Imran Zaman <imran.zaman@intel.com>
+ SRC_URI_append = " file://Enable-disable-default-virtual-keyboard.patch"
+-EXTRA_OECONF += "--disable-default-vkb"
++EXTRA_OECONF += "--disable-default-vkb --disable-egl"
+ 
+ # [PATCH] fix up for GENIVI baseline 9.0
+ # Signed-off-by: Yong-iL Joh <yong-il.joh@windriver.com>
